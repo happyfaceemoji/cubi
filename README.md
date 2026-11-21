@@ -2,9 +2,16 @@
 
 A 48 mm cube, four-legged desk robot that wanders around, watches your face and acts like a puppy. Parts cost under $500. Designed in parametric CAD, trained in a physics sim, printed on a Bambu A1 mini, and **walking on her own on real hardware** since 17 Nov 2026.
 
-![v2 serviceable body](media/cubi_v2_overview.png)
+<p>
+  <img src="media/cubi_built.jpg" alt="Cubi, built" width="360">
+  <img src="media/cubi_walking.gif" alt="Cubi walking on her own" width="400">
+</p>
 
-![simulated walk](media/walk.gif)
+Full-quality clip: [media/cubi_walking.mp4](media/cubi_walking.mp4)
+
+| v2 serviceable body (designed) | Simulated walk |
+|---|---|
+| ![v2 serviceable body](media/cubi_v2_overview.png) | ![simulated walk](media/walk.gif) |
 
 ## What she does
 - **Walks** on four hip-only legs (one 3.7 g servo each) with a stick-slip gait trained in simulation, then auto-tuned on the real robot with her own distance sensor.
