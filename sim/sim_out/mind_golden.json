@@ -1,0 +1,536 @@
+{
+ "golden": [
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.428,
+    "call": 0.077,
+    "play": 0.206,
+    "rest": 0.128,
+    "look": 0.043,
+    "idle": 0.053,
+    "react": 0.064
+   },
+   "events": {
+    "edge_stops": 8,
+    "naps": 1,
+    "calls": 6,
+    "answered": 2,
+    "taps": 16,
+    "praised": 14,
+    "min_energy": 0.41137012208817925,
+    "greetings": 2
+   },
+   "play_counts": {
+    "wiggle": 22,
+    "paw_pat": 3,
+    "bounce": 6,
+    "sniff": 5,
+    "stretch": 5,
+    "zoomies": 1
+   },
+   "area_cells": 19,
+   "worst_tilt": 19.1,
+   "seed": 51,
+   "persona": "golden",
+   "memory": false,
+   "prefs": {
+    "wiggle": 2.0,
+    "paw_pat": -0.15,
+    "bounce": -0.3,
+    "sniff": -0.25,
+    "stretch": -0.25,
+    "zoomies": -0.05
+   },
+   "explore_s": 154.08
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.308,
+    "call": 0.184,
+    "play": 0.219,
+    "rest": 0.121,
+    "look": 0.041,
+    "idle": 0.095,
+    "react": 0.032
+   },
+   "events": {
+    "edge_stops": 7,
+    "naps": 1,
+    "calls": 15,
+    "answered": 4,
+    "taps": 7,
+    "praised": 2,
+    "min_energy": 0.4646581404945782,
+    "greetings": 1
+   },
+   "play_counts": {
+    "wiggle": 3,
+    "paw_pat": 7,
+    "bounce": 13,
+    "sniff": 10,
+    "stretch": 4,
+    "zoomies": 2
+   },
+   "area_cells": 13,
+   "worst_tilt": 19.1,
+   "seed": 52,
+   "persona": "golden",
+   "memory": false,
+   "prefs": {
+    "wiggle": -0.15,
+    "paw_pat": -0.3,
+    "bounce": 0.0,
+    "sniff": 0.15,
+    "stretch": -0.2,
+    "zoomies": -0.1
+   },
+   "explore_s": 110.88
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.315,
+    "call": 0.192,
+    "play": 0.17,
+    "rest": 0.139,
+    "look": 0.029,
+    "idle": 0.125,
+    "react": 0.03
+   },
+   "events": {
+    "edge_stops": 6,
+    "naps": 1,
+    "calls": 15,
+    "answered": 2,
+    "taps": 5,
+    "praised": 2,
+    "min_energy": 0.3924669537931415,
+    "greetings": 2
+   },
+   "play_counts": {
+    "wiggle": 6,
+    "paw_pat": 8,
+    "bounce": 12,
+    "sniff": 1,
+    "stretch": 3,
+    "zoomies": 4
+   },
+   "area_cells": 8,
+   "worst_tilt": 19.1,
+   "seed": 53,
+   "persona": "golden",
+   "memory": false,
+   "prefs": {
+    "wiggle": 0.35,
+    "paw_pat": -0.35,
+    "bounce": 0.05,
+    "sniff": -0.05,
+    "stretch": -0.15,
+    "zoomies": -0.2
+   },
+   "explore_s": 113.4
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.25,
+    "call": 0.064,
+    "play": 0.324,
+    "rest": 0.182,
+    "look": 0.014,
+    "idle": 0.017,
+    "react": 0.149
+   },
+   "events": {
+    "edge_stops": 2,
+    "naps": 2,
+    "calls": 5,
+    "answered": 2,
+    "taps": 50,
+    "praised": 48,
+    "min_energy": 0.4461014608636233,
+    "greetings": 1
+   },
+   "play_counts": {
+    "wiggle": 79,
+    "paw_pat": 4,
+    "bounce": 4,
+    "sniff": 1,
+    "stretch": 6,
+    "zoomies": 0
+   },
+   "area_cells": 11,
+   "worst_tilt": 19.1,
+   "seed": 54,
+   "persona": "golden",
+   "memory": false,
+   "prefs": {
+    "wiggle": 1.95,
+    "paw_pat": -0.2,
+    "bounce": -0.2,
+    "sniff": -0.05,
+    "stretch": 1.05,
+    "zoomies": 0.0
+   },
+   "explore_s": 90.0
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.402,
+    "call": 0.121,
+    "play": 0.23,
+    "rest": 0.085,
+    "look": 0.014,
+    "idle": 0.068,
+    "react": 0.079
+   },
+   "events": {
+    "edge_stops": 7,
+    "naps": 1,
+    "calls": 12,
+    "answered": 1,
+    "taps": 18,
+    "praised": 18,
+    "min_energy": 0.454691269332912
+   },
+   "play_counts": {
+    "wiggle": 30,
+    "paw_pat": 3,
+    "bounce": 5,
+    "sniff": 4,
+    "stretch": 6,
+    "zoomies": 1
+   },
+   "area_cells": 20,
+   "worst_tilt": 19.1,
+   "seed": 51,
+   "persona": "clown",
+   "memory": false,
+   "prefs": {
+    "wiggle": 2.0,
+    "paw_pat": -0.3,
+    "bounce": -0.5,
+    "sniff": -0.4,
+    "stretch": -0.6,
+    "zoomies": -0.1
+   },
+   "explore_s": 144.72
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.309,
+    "call": 0.051,
+    "play": 0.289,
+    "rest": 0.183,
+    "look": 0.036,
+    "idle": 0.068,
+    "react": 0.064
+   },
+   "events": {
+    "edge_stops": 5,
+    "naps": 2,
+    "calls": 5,
+    "answered": 2,
+    "taps": 22,
+    "praised": 21,
+    "min_energy": 0.4004232748422535
+   },
+   "play_counts": {
+    "wiggle": 44,
+    "paw_pat": 7,
+    "bounce": 7,
+    "sniff": 9,
+    "stretch": 4,
+    "zoomies": 1
+   },
+   "area_cells": 19,
+   "worst_tilt": 19.1,
+   "seed": 52,
+   "persona": "clown",
+   "memory": false,
+   "prefs": {
+    "wiggle": 0.4,
+    "paw_pat": -0.7,
+    "bounce": -0.25,
+    "sniff": -0.45,
+    "stretch": -0.4,
+    "zoomies": -0.1
+   },
+   "explore_s": 111.24000000000001
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.278,
+    "call": 0.03,
+    "play": 0.305,
+    "rest": 0.22,
+    "look": 0.007,
+    "idle": 0.06,
+    "react": 0.1
+   },
+   "events": {
+    "edge_stops": 5,
+    "naps": 3,
+    "calls": 3,
+    "answered": 0,
+    "taps": 37,
+    "praised": 36,
+    "min_energy": 0.46867556789059656
+   },
+   "play_counts": {
+    "wiggle": 60,
+    "paw_pat": 4,
+    "bounce": 1,
+    "sniff": 3,
+    "stretch": 5,
+    "zoomies": 3
+   },
+   "area_cells": 16,
+   "worst_tilt": 19.1,
+   "seed": 53,
+   "persona": "clown",
+   "memory": false,
+   "prefs": {
+    "wiggle": 1.0,
+    "paw_pat": -0.4,
+    "bounce": -0.1,
+    "sniff": -0.3,
+    "stretch": -0.05,
+    "zoomies": -0.3
+   },
+   "explore_s": 100.08000000000001
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.278,
+    "call": 0.02,
+    "play": 0.407,
+    "rest": 0.14,
+    "look": 0.014,
+    "idle": 0.013,
+    "react": 0.128
+   },
+   "events": {
+    "edge_stops": 4,
+    "naps": 1,
+    "calls": 2,
+    "answered": 2,
+    "taps": 46,
+    "praised": 45,
+    "min_energy": 0.3718649423998604
+   },
+   "play_counts": {
+    "wiggle": 66,
+    "paw_pat": 6,
+    "bounce": 5,
+    "sniff": 4,
+    "stretch": 11,
+    "zoomies": 1
+   },
+   "area_cells": 8,
+   "worst_tilt": 19.1,
+   "seed": 54,
+   "persona": "clown",
+   "memory": false,
+   "prefs": {
+    "wiggle": 2.0,
+    "paw_pat": -0.15,
+    "bounce": -0.05,
+    "sniff": 0.05,
+    "stretch": 0.25,
+    "zoomies": -0.1
+   },
+   "explore_s": 100.08000000000001
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.273,
+    "call": 0.148,
+    "play": 0.19,
+    "rest": 0.111,
+    "look": 0.064,
+    "idle": 0.148,
+    "react": 0.066
+   },
+   "events": {
+    "edge_stops": 7,
+    "naps": 2,
+    "calls": 15,
+    "answered": 5,
+    "taps": 22,
+    "praised": 20,
+    "min_energy": 0.4658652768932576
+   },
+   "play_counts": {
+    "wiggle": 29,
+    "paw_pat": 4,
+    "bounce": 4,
+    "sniff": 1,
+    "stretch": 4,
+    "zoomies": 2
+   },
+   "area_cells": 17,
+   "worst_tilt": 19.1,
+   "seed": 51,
+   "persona": "cuddler",
+   "memory": false,
+   "prefs": {
+    "wiggle": 2.0,
+    "paw_pat": 0.05,
+    "bounce": 0.05,
+    "sniff": -0.1,
+    "stretch": -0.4,
+    "zoomies": -0.2
+   },
+   "explore_s": 98.28
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.287,
+    "call": 0.138,
+    "play": 0.207,
+    "rest": 0.139,
+    "look": 0.057,
+    "idle": 0.13,
+    "react": 0.043
+   },
+   "events": {
+    "edge_stops": 3,
+    "naps": 2,
+    "calls": 14,
+    "answered": 3,
+    "taps": 16,
+    "praised": 13,
+    "min_energy": 0.3310341213648453
+   },
+   "play_counts": {
+    "wiggle": 22,
+    "paw_pat": 6,
+    "bounce": 5,
+    "sniff": 3,
+    "stretch": 6,
+    "zoomies": 2
+   },
+   "area_cells": 15,
+   "worst_tilt": 19.1,
+   "seed": 52,
+   "persona": "cuddler",
+   "memory": false,
+   "prefs": {
+    "wiggle": 1.9,
+    "paw_pat": -0.15,
+    "bounce": -0.5,
+    "sniff": -0.3,
+    "stretch": 0.75,
+    "zoomies": -0.2
+   },
+   "explore_s": 103.32
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.205,
+    "call": 0.252,
+    "play": 0.175,
+    "rest": 0.155,
+    "look": 0.05,
+    "idle": 0.124,
+    "react": 0.039
+   },
+   "events": {
+    "edge_stops": 5,
+    "naps": 2,
+    "calls": 25,
+    "answered": 4,
+    "taps": 14,
+    "praised": 11,
+    "min_energy": 0.5725491560824558
+   },
+   "play_counts": {
+    "wiggle": 17,
+    "paw_pat": 1,
+    "bounce": 4,
+    "sniff": 3,
+    "stretch": 3,
+    "zoomies": 3
+   },
+   "area_cells": 5,
+   "worst_tilt": 19.1,
+   "seed": 53,
+   "persona": "cuddler",
+   "memory": false,
+   "prefs": {
+    "wiggle": 1.8,
+    "paw_pat": -0.1,
+    "bounce": 0.05,
+    "sniff": -0.3,
+    "stretch": -0.3,
+    "zoomies": -0.3
+   },
+   "explore_s": 73.8
+  },
+  {
+   "fell": false,
+   "flight": null,
+   "share": {
+    "explore": 0.25,
+    "call": 0.189,
+    "play": 0.206,
+    "rest": 0.196,
+    "look": 0.014,
+    "idle": 0.124,
+    "react": 0.022
+   },
+   "events": {
+    "edge_stops": 2,
+    "naps": 3,
+    "calls": 19,
+    "answered": 4,
+    "taps": 7,
+    "praised": 6,
+    "min_energy": 0.5815714573101769
+   },
+   "play_counts": {
+    "wiggle": 3,
+    "paw_pat": 3,
+    "bounce": 4,
+    "sniff": 2,
+    "stretch": 11,
+    "zoomies": 1
+   },
+   "area_cells": 18,
+   "worst_tilt": 19.1,
+   "seed": 54,
+   "persona": "cuddler",
+   "memory": false,
+   "prefs": {
+    "wiggle": 0.15,
+    "paw_pat": -0.2,
+    "bounce": 0.05,
+    "sniff": -0.2,
+    "stretch": 0.7,
+    "zoomies": -0.1
+   },
+   "explore_s": 90.0
+  }
+ ]
+}

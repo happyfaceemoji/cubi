@@ -1,0 +1,227 @@
+CUBI WITH CAMERA EYES (48 mm, 4 micro servos, 1S rechargeable) - PRINT & BUILD NOTES
+(Older versions: v4_mini_screen/ = mini with a 1.3" screen, v3_80mm/ = 80 mm MG90S version.)
+
+PRINTING ON THE BAMBU A1 MINI - 0.4 mm nozzle, everything in Bambu PLA Basic, ONE plate
+  a1mini_plates/ponder_mini_all_parts_PLA_Basic.stl  shell (top face down), bottom plate, 4 legs (horn
+                                                      pocket up), 4 shoes on their side (~27 g)
+  (Single parts are in stl/ if you want to reprint just one.)
+
+  Bambu Studio:
+  - Printer: Bambu Lab A1 mini 0.4 nozzle. Filament: Bambu PLA Basic. Process: 0.20mm Standard
+    (0.16 mm Fine looks better on a part this small, and is still under 2 hours).
+  - Textured or smooth PEI, no glue. NO supports anywhere.
+  - Shell and plate: 4 walls (the shell walls are 1.6 mm = 4 lines, so they print solid), 15% gyroid.
+  - Legs: per-object settings, 4 walls, 40% infill.
+  - Overhangs: the oval USB-C bevel (arched ends), small hole arches, the 1.4 mm eye bezels and a 2 mm speaker ledge.
+    Default settings handle them. Two-colour tip: with an AMS lite, print the eye bezels in white.
+
+  Dry the filament first, wash the plate, run Bed Leveling + Flow Dynamics Calibration.
+  Print ONE leg + ONE shoe first and test them on a real micro-servo horn.
+
+PARTS (see Cubi_BOM.pdf)
+- 4x GH-S37D 3.7 g digital micro servos (20 x 9 x 22 mm incl. output; 90 deg travel; horns and screws included)
+- Seeed XIAO ESP32S3 Sense (camera + mic + battery charger built in) - LEFT EYE
+- VL53L0X time-of-flight distance sensor, GY-530 board (designed for 20.5 x 15.5 mm; measure yours) - RIGHT EYE
+- 1S LiPo 602035 (6 x 20 x 35 mm, 400-500 mAh); cut its plug, solder on a JST PH2.0 male/female pair
+- E-Switch 100SP1T1B4M2QE mini toggle (smooth bushing, no nut; PCB pins: solder wires straight on)
+- MAX98357A amp (leave its screw terminal off), 1511 speaker (15 x 11 x 3.5, 8 ohm 1 W)
+- 1x 1000 uF 6.3 V capacitor 8 mm wide (battery bulk), 1x 470 uF 6.3-10 V 6.3 mm wide (servo supply); SMD or radial
+- 2x 100 kOhm resistors (battery-voltage divider into D2)
+- Copper tape, heat-shrink, 26 AWG silicone wire, foam tape, a thin strap (1N5819 diode now optional: servo-voltage drop)
+- 4x M2x6 screws (bottom plate, heads sunk in counterbores, self-tapping into the corner bosses)
+
+BUILD ORDER (the order the fit check proved works)
+1. VL53L0X (RIGHT EYE) FIRST: behind the right eye is a solid wedge whose face tilts 30 deg down, with a
+   pocket for the sensor's parts and a cone window out through the eye. Bring the board in from behind, a
+   few mm toward the middle and low, then slide it UP the wedge face (sensor side against the face, header
+   at the bottom) until it stops at the top of the pocket. Two dabs of hot glue on the edges.
+2. XIAO ESP32S3 Sense (LEFT EYE): glue the camera module into the square socket behind the left eye, lens
+   in the opening. Lift the board stack in ~15 mm back from its spot, then push it straight forward onto the
+   camera; its USB-C pokes out of the hole in the LEFT wall. Hot-glue the stack edge to the left wall.
+3. Check the eyes: USB-C into the XIAO through the side opening, run the self-test: camera and distance PASS.
+4. Speaker between the two ledges on the right wall (behind the sensor wedge), sound side out, glue.
+   Copper-tape touch pad under the middle of the top. Battery bulk cap (1000 uF) under the top, back-right.
+5. Hip servos, one at a time: hold it ~9 mm toward the middle, lift it up past the tab pads, slide it out
+   until the shaft pokes through the side hole and the tabs sit flat on the two pads. Drive the servo's own
+   screws through the tab holes into the pads (they self-tap; pre-drill 1 mm if they're stiff). The pads
+   are solid, so it doesn't matter where your servo's holes land. If the case touches the wall before the
+   tabs touch the pads, that's fine; if the tabs touch first and the spline barely pokes out, sand the pads.
+6. Power switch: solder its wires to the middle pin and one outer pin first, push the smooth bushing through the
+   6.65 mm back hole from INSIDE (between the two rear servos) until the body drops into the shallow pocket, then
+   glue the body to the wall (gel super glue or hot glue). No nut. Servo-supply capacitor (470 uF) in next to it.
+7. Battery: stand it on its long edge between the fences on the bottom plate, strap the left end. Foam-tape
+   the amp to the RIGHT half of the battery's front face (chips forward). Plug in, lift the plate in, 4 x M2x6.
+8. Legs: centre each servo, glue a horn into each leg recess (arm down the leg), press the leg onto the
+   spline ~30 deg FORWARD (front legs) or ~30 deg BACK (rear legs), not straight down, add the servo's centre screw. Push a shoe onto each peg with glue.
+
+WIRING (the Wiring view in the 3D viewer shows every wire and the pin table)
+- Battery -> PH2.0 plug -> toggle middle lug; toggle outer lug = switched battery. Off = battery fully
+  disconnected.
+- Switched battery (power splice) -> XIAO BAT+ pad (back of the XIAO, near the USB end), 1000 uF +, top of the
+  100k/100k divider, 4 servo reds, 470 uF +, amp VIN. No boost: the GH-S37D servos are rated 3.6-4.8 V, so they
+  run straight off the 1S cell (4.2 V full). Nothing feeds the XIAO's 5V pin.
+- Battery - -> ground splice -> XIAO BAT-, 4 servo browns, both caps, amp GND, divider bottom.
+- Divider middle -> D2 (reads half the battery voltage: 4.2 V full -> 2.1 V; firmware stops walking below 3.6 V -> 1.8 V).
+- XIAO 3V3 -> VL53L0X VIN. XIAO GND -> VL53L0X GND. VL53L0X GPIO1 and XSHUT: open.
+- CHARGING: plug USB-C into the LEFT side (the XIAO's port) with the switch ON. The XIAO charges the cell at
+  ~50 mA (safe for 500 mAh); about 10-12 h from flat, so charge overnight. Its charge LED shows status.
+- XIAO pins: D0 touch pad | D1 / D3 / D8 / D9 servos FL / FR / RL / RR | D4 SDA, D5 SCL (distance sensor)
+  D6 amp BCLK | D7 amp LRC | D10 amp DIN | D2 battery sense.
+- Firmware: camera XCLK on LEDC timer 0, servos on timers 1-3. XIAO mic on I2S0 (PDM), amp on I2S1.
+  D6/D7 double as the boot serial port: expect a short click from the speaker at power-on.
+- Camera and mic are wired inside the XIAO Sense. Leave its SD slot EMPTY (it shares D8-D10).
+- Amp SD and GAIN: unconnected.
+- Self-test firmware: firmware/ponder_selftest (Arduino, board XIAO_ESP32S3, PSRAM OPI, library "VL53L0X" by Pololu).
+  Flash it, open Serial Monitor 115200: it tests every part and prints PASS/FAIL, then w = walk, d = distance...
+- Checks: python fitcheck.py | node erc_check.js (npm i three@0.128.0) | python ponder_sim.py --gif (pip install pybullet)
+
+TRAINING CUBI IN SIMULATION (cubi_train.py, on top of the physics bench)
+  pip install pybullet trimesh manifold3d cma gymnasium
+  python cubi_train.py gait     CMA-ES gait search, ~4 min on 2 cores. Every generation uses fresh random
+                                worlds: desk grip 0.2-0.6, 0-30% heavier, 50-100% servo strength, 70-110% servo
+                                speed, 0-40 ms servo lag, +-3 deg desk tilt. Candidates are judged on 12 held-out
+                                worlds and only replace the current gait if they beat it.
+  python cubi_train.py edge     edge/wall reflex: 8 threshold settings x 6 worlds x 4 approach angles + false alarms
+  python cubi_train.py test     trained vs hand-tuned on the same 12 test worlds
+  python cubi_train.py export   writes firmware/ponder_selftest/cubi_gait.h (the firmware's walk() uses it)
+  python cubi_train.py ppo      optional: a 2x32 neural net that adds +-4 deg corrections on top of the gait
+                                (pip install stable-baselines3 torch; a few hours on a laptop). Only flashed if it
+                                beats the plain gait by 5% on the test worlds.
+  Result (1 Nov): 26.7 mm/s average, 20.6 worst-case on the test worlds vs 16.9 / 13.5 for the hand-tuned gait
+  (+58%), for ~20% more servo effort. 12 deg swing, 2.2 steps/s, 35% fast swing, legs trimmed +1.6 / -1.6 deg.
+  The step rate is capped at 2.2/s: with no cap it found 3/s (32 mm/s), which leans on the sim's ideal servos.
+  Edge reflex: 0 falls in 192 approaches, worst stop 40 mm from the edge, no false stops at any ratio 1.15-1.5
+  (a real desk edge drops past the sensor range, so all thresholds trip together; 1.35 kept for small drops).
+  Before trusting a trained gait: time one real servo swinging 60 deg on the battery and put it in
+  ponder_sim.SERVO['speed']; then compare a real 3 s walk with the sim (expect ~8 cm).
+
+EYES
+- Tall ovals: 9 x 12 mm openings in 16.5 x 20 mm bezel rings, centred 1 mm below the camera lens / sensor axis so
+  the rings clear the top edge. The distance sensor's 25 deg beam leaves through the lower half of the right eye
+  (ray test: worst ray at 0.87 of the oval edge, nothing clipped); the camera sees out to 36 deg off-axis unblocked.
+- Camera fit (left eye): the module pushes into an 8.6 mm square socket (8.5 module + 0.05 per side) with 4.6 mm
+  deep walls, and the lens barrel sits in a 0.8 mm collar at the back of the oval with 0.2 mm all round. Field of
+  view is clear to 40 deg off-axis. PRINT stl/ponder_fit_coupon_camera.stl FIRST (~10 min, same orientation as the
+  shell): if the module won't go in, set CAM_SQ = 8.7; if it rattles, 8.55. Lens barrel too tight in the collar:
+  measure it and set CAM_LENS_D. A dot of gel CA on one socket wall holds it either way.
+- The sensor's view cone is cut only behind the wall, so the face shows a clean oval. For the best look, black out
+  the inside of both eyes (Posca / Sharpie / matte acrylic) so the sensor wedge and camera socket vanish.
+
+LIE DOWN (keys L / U; puppy mode lies down when she falls asleep and gets up when you tap her)
+- Front legs fold 75 deg forward, rear legs 75 deg back, until she rests flat on the bottom plate (4.9 mm
+  thick, so it hangs 2.5 mm lower than a plain 2.4 mm plate). Then the servos switch off: no current while she rests.
+- The GH-S37D only travels 90 deg, so the legs go on the splines OFFSET: front legs ~30 deg forward, rear legs
+  ~30 deg back, with the servo centred. Walking then uses servo -42..-18 deg (front) / +18..+42 (rear), folding uses
+  the far end (45). Firmware: legs[].horn_deg = +30 / -30, and trim_us fixes whatever the spline teeth gave you.
+- Why the thick plate: with a 2.4 mm plate the body only touches at ~78 deg of fold (sim), beyond the servo's
+  reach. The extra 2.5 mm makes it touch at ~74. Ground clearance while walking drops from 18.4 to 15.9 mm, and the
+  plate weighs ~5 g more (sim: walking speed unchanged, 27 mm/s). The screw holes are counterbored 2.5 mm from
+  below, so the M2x6 screws still clamp through 2.4 mm and bite ~3.6 mm into the bosses.
+- Sim (10 worlds incl. glass, rubber mat, 30% heavier, half-strength servos, +-2.5 deg desk tilt): lies flat on the
+  plate every time, servo load ~0 while lying, gets back up every time. On a tilted slippery desk she can slide
+  ~2 cm while lying down.
+
+STRETCH (key 8; puppy mode does it every time she wakes up)
+- A real puppy stretch, using the folding reach: play bow (front legs out to 72 deg, nose drops ~22 deg, bum bobs),
+  then each back leg stretched 60 deg out behind, one at a time. 4.5 s.
+- Sim: 0 falls, ~7 mm drift, ~5 deg turn. The bum bob is in phase on purpose: wagging the rear legs in opposite
+  phase twists her around ~11 deg.
+
+SHUTDOWN / GOODNIGHT (key Z; puppy mode does it on its own when the battery hits 3.6 V)
+- Sequence: settle -> lie down on the bottom plate -> keep folding the legs up beside her -> servos off. Then flip
+  the switch. The switch cuts the battery instantly, so the firmware can't see it coming: always Z first.
+- Waking (U, or a tap/clap in puppy mode): legs back down to the lying pose, stand up, stretch.
+- How far the legs fold is set by the servo, not the shell. Fit check: folding front legs forward and rear legs back
+  is clear of the body and the other legs all the way to 180 deg (pointing straight up).
+  With the GH-S37D at its rated 90 deg, the legs stop at 75 deg, the same as lying down, so the tuck adds nothing.
+  Vertical needs about 210 deg of servo travel (horn offset = travel/2 - 15 = 90).
+- Measure YOUR servo before mounting legs: key r, step with < and >, note the pulse at each end, measure the angle.
+  Put it in SERVO_TRAVEL_DEG / SERVO_MIN_US / SERVO_MAX_US; TUCK_DEG follows. If you get more travel, also raise
+  legs[].horn_deg and HORN_OFFSET_DEG (ponder_parts.py) to travel/2 - 15, capped at 90, and re-mount the legs.
+- Viewer: "Shutdown, your servos (90 deg)" and "Shutdown, 180 deg preview" show both cases.
+
+GAIT SMOOTHNESS (sim, 12 test worlds; jolt = RMS body acceleration, rock = RMS roll + pitch rate)
+                                speed       jolt        rock       bob
+  trained walk (default)        27.0 mm/s   1.17 m/s2   13.2 deg/s  0.56 mm
+  same, reversals rounded       30.4        1.16        15.1        0.61     faster, NOT smoother
+  smoothest at >= 22 mm/s       21.8        0.94        14.6        0.47
+  smoothest at >= 18 mm/s       18.6        0.82        12.0        0.38     'calm' gait (cubi_brain.json gait_calm)
+  old hand-tuned                17.1        0.86        10.1        0.36
+- The jolt IS the walk: she moves by stick-slip (feet slip forward fast, grip on the slow push back). Searches
+  that weighted smoothness either stayed fast and jerky or stopped walking (0.9 mm/s); there's no free lunch.
+  Smoother costs speed roughly 1:1.
+- Soft start / stop (in firmware walk() and mind-mode walks): stride eases in over 0.5 s and, at the end, she keeps
+  stepping while the stride shrinks to nothing over 0.6 s. Start rocking 40 -> 24 deg/s, stop 38 -> 27.
+  An edge or wall still stops her instantly.
+- CUBI_SMOOTH in cubi_gait.h rounds off each leg's reversals (0..1). Left at 0: it made her faster, not smoother.
+- What the sim can't show: servo gear backlash and deadband. Watch the real robot before chasing more smoothness;
+  then softer shoes (TPU pads) or a flatter rocker (SHOE_ROCK_R 24-30 mm) are the next things to try.
+
+MIND MODE (key M; firmware/ponder_selftest/cubi_mind.h, tested in cubi_mind.py)
+- She does what she wants. No commands: drives build up and she acts on them.
+  Traits (rolled on first boot, saved in flash; I = show them, W = roll a new Cubi): bold, social, playful, lazy.
+  Drives: energy, curiosity, loneliness, boredom (+ excitement from taps). Each scores a behaviour: explore,
+  call you (turns, whines, wiggles, waits 4 s for a tap), play a trick, nap (lies down, servos off, wakes on a
+  tap/clap or when rested), look around, sit. She picks with a little randomness: consistent, never a loop.
+- GOLDEN RETRIEVER (key G; keeps what she's learned, W goes back to a random Cubi): traits bold 0.6, social 0.95,
+  playful 0.85, lazy 0.35, plus habits: praise counts 70% more and fades half as fast, a clap is always a party
+  (never startles), after a minute without contact the next touch is a reunion (wag-bounce-wag + yip), she wags
+  while sitting, and calls you with a happy yip-bounce instead of a whine.
+  Sim (4 days each, same desks): golden 33% exploring, 23% playing, 13% looking for you, 0 falls, 6 reunions,
+  0 startles. She praises up faster per tap but plays less than the clown, so a trick takes her a little longer to
+  become a favourite in practice.
+- Learning: a head tap within 4 s of a trick is praise; that trick gets likelier, ignored ones fade. Saved.
+- Reflexes still win: taps / claps / hands interrupt anything, the edge reflex guards every step, glance and bow.
+- Sim (41 six-minute days on a finite 50 x 36 cm desk, random worlds, a simulated person coming and going):
+  0 falls. Time budget by personality - explorer 51% exploring; cuddler calls for you 14% and naps 20%;
+  clown plays 34%. Someone who only praises 'wiggle': it goes from 59-91% of her play on day 1 to 80-94% on day 2.
+- Exploring, she glances 25 deg left and right every 2 s of walking. The distance sensor only looks AHEAD:
+  walking within ~20 deg of parallel to an edge, her side legs went over before the beam saw it (3 falls in 16
+  days before the glance, 0 in 24 after). Cost: exploring is ~1/3 walking, 2/3 glancing.
+- Desk memory (dead-reckoned map of edges / visited spots) is in the sim but OFF: without a gyro her heading drifts
+  ~1 deg/s and the map didn't reduce edge hits (3.4 vs 3.0 per minute of exploring). An IMU would fix that.
+
+PUPPY MODE (firmware/ponder_selftest/cubi_play.h, tested in cubi_play.py)
+- Serial Monitor: P = puppy mode, x = stop, 1-9 = one trick (1 wiggle, 2 paw pat, 3 bounce, 4 chase, 5 zoomies,
+  6 sniff, 7 startle, 8 stretch, 9 settle).
+- Senses: head tap (copper pad) -> wiggle + trill. Clap -> startle (calm) or bounce (excited). Hand in front of the
+  eyes -> paw pat; pull it away -> she chases it. Ignored 5 min -> sighs and sleeps; a tap wakes her with a stretch.
+- Mood: excitement jumps on taps (+0.5), claps (+0.3), hands (+0.25) and fades over ~20 s; energy drains while
+  playing. High excitement = bounces, wiggles, zoomies (max once a minute); low = sniffing, exploring, settling.
+  Never the same trick twice in a row, never the same speed twice (85-115%), 0.5-3 s between ideas.
+- Sounds are synthesized on the chip (yip, double yip, whine, sigh, trill, ruff). Previews: sim_out/sounds/*.wav
+  (python cubi_play.py sounds).
+- Physics checks (python cubi_play.py tricks / soak): every trick stays within +-12 deg of hip swing and under
+  4 deg of body tilt on its own (bounce was 17 deg at 8 deg / 5 Hz and resonates at 6 Hz: now 6 deg / 4 Hz).
+  Soak: 16 runs x 60 s of random taps, claps and hands with a desk edge 12-30 cm away at up to 50 deg: 0 falls,
+  0 tip-overs, 12 edge stops (the reflex beats every forward trick, including zoomies), worst tilt 15 deg.
+- The edge sensor only looks forward. Backing up (startle, edge back-off) is blind: startle is limited to once
+  every 10 s (~1 cm). Don't put her down with her back to an edge.
+
+HOW IT HAS TO WALK (full physics sim, ponder_sim.py: real leg/shoe meshes, real mass layout, GH-S37D limits)
+- Stick-slip: diagonal pairs (FL+RR, FR+RL) alternate; each leg swings forward fast and pushes back slowly.
+  The firmware uses the TRAINED gait (cubi_gait.h, above). The hand-tuned bench gait (+-12 deg, 1.5 steps/s,
+  20% fast swing) does 24 mm/s on wood, glass-slick (0.2), 30% heavier or half-strength servos; 20 mm/s on a
+  grippy mat. Tilt stays under 1 deg.
+- Turning: pivot (one side still) ~9 deg/s, or diagonal spin ~9 deg/s. Plain sine waves don't move it.
+- Slopes: 5 deg up or down, ~22 mm/s (uphill it drifts sideways: steer it).
+- Cables: a loose cable gets shoved along. A TAPED-DOWN cable stops it (hip-only legs can't lift a foot).
+- Standing still: stop sending servo pulses; the legs hold straight down.
+- Edge + wall reflex (run it in firmware at 50 Hz, never via the agent): at startup read the ToF on flat
+  desk (~105 mm). Reading > 1.35x that, or no return = EDGE: stop, walk backward 1.5 s, stop. Reading <
+  0.75x = obstacle: stop. Sim: stops 89 mm short square-on, 62 mm at 30 deg, 34 mm at 60 deg blind-side
+  first, 85 mm going downhill, also on a slick desk. With the sensor looking straight ahead it walks off.
+- Sim note (1 Nov): pybullet multiplies the two surfaces' friction. Earlier runs set it on both the desk and
+  the shoes, so every "mu" was really mu squared (more slippery than labelled). Fixed; numbers above are new.
+
+LIMITS
+- Hips within +-12 deg (front and rear legs touch at 17 deg).
+- Battery (500 mAh): ~1 h 15 min of walking with the camera on (sim: servos 0.13 A avg + XIAO 0.15 A + sensor),
+  ~1.8 h idle with Wi-Fi + camera on. Sleep the camera between photos to stretch it.
+  Charge AND program over the left-side USB-C (switch ON to charge).
+- Vision is snapshots: the XIAO sends a JPEG to the OpenClaw agent on request or every few seconds; a
+  vision model describes it (1-3 s round trip). The distance sensor handles edges and walls locally.
+- Servos peak ~0.3-0.5 A together (sim); with a loud word + Wi-Fi burst the cell sees ~1.2 A for milliseconds (2C, fine).
+- Servo pulses 1000-2000 us only (90 deg servos). Torque drops ~25% as the cell runs down; the sim walks at half torque.
+- Cap the speaker volume at ~70% in firmware.
+- About 77 g. 48 x 50 x 48 mm body, 64 mm wide over the legs, 69 mm tall, 18 mm ground clearance.

@@ -1,0 +1,26 @@
+{
+ "w": 0.5,
+ "gait": {
+  "amp_deg": 11.9957,
+  "freq_hz": 2.1993,
+  "fast": 0.1554,
+  "ph_RB": -0.1664,
+  "ph_RF": 0.4635,
+  "ph_LB": 0.3567,
+  "trim_F": 0.8728,
+  "trim_B": -0.0695,
+  "smooth": 0.7891
+ },
+ "test": {
+  "mm_per_s_mean": 30.8,
+  "mm_per_s_worst": 24.6,
+  "drift_mm_per_s": 0.9,
+  "turn_deg": 1.6,
+  "tilt_deg_worst": 4.1,
+  "effort": 0.081,
+  "falls": 0,
+  "acc_rms": 1.09,
+  "rock_rms": 17.0,
+  "bob_mm": 0.62
+ }
+}

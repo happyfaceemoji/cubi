@@ -1,0 +1,8 @@
+cubi_secrets.h
+*.bak
+*.pre-*
+.DS_Store
+__pycache__/
+*.pyc
+build/
+.venv/

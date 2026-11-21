@@ -1,0 +1,239 @@
+[
+ {
+  "seed": 0,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 5.0,
+  "edge_stops": 1,
+  "acts": {
+   "bounce": 26,
+   "paw_pat": 10,
+   "zoomies": 1,
+   "chase": 7,
+   "wiggle": 11
+  }
+ },
+ {
+  "seed": 1,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 4.9,
+  "edge_stops": 1,
+  "acts": {
+   "bounce": 29,
+   "paw_pat": 6,
+   "zoomies": 1,
+   "chase": 7,
+   "wiggle": 12
+  }
+ },
+ {
+  "seed": 2,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 1.6,
+  "edge_stops": 0,
+  "acts": {
+   "bounce": 27,
+   "paw_pat": 5,
+   "zoomies": 1,
+   "chase": 4,
+   "explore": 1,
+   "wiggle": 15,
+   "sniff": 1
+  }
+ },
+ {
+  "seed": 3,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 0.8,
+  "edge_stops": 0,
+  "acts": {
+   "bounce": 34,
+   "paw_pat": 4,
+   "zoomies": 1,
+   "chase": 4,
+   "wiggle": 13
+  }
+ },
+ {
+  "seed": 4,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 11.7,
+  "edge_stops": 2,
+  "acts": {
+   "settle": 1,
+   "bounce": 16,
+   "paw_pat": 1,
+   "explore": 8,
+   "chase": 5,
+   "idle": 2,
+   "wiggle": 5,
+   "sniff": 7
+  }
+ },
+ {
+  "seed": 5,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 14.0,
+  "edge_stops": 1,
+  "acts": {
+   "bounce": 29,
+   "paw_pat": 5,
+   "explore": 2,
+   "chase": 1,
+   "wiggle": 14,
+   "sniff": 3
+  }
+ },
+ {
+  "seed": 6,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 3.7,
+  "edge_stops": 0,
+  "acts": {
+   "bounce": 30,
+   "paw_pat": 6,
+   "zoomies": 1,
+   "chase": 4,
+   "wiggle": 15
+  }
+ },
+ {
+  "seed": 7,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 4.5,
+  "edge_stops": 1,
+  "acts": {
+   "bounce": 23,
+   "paw_pat": 10,
+   "zoomies": 1,
+   "explore": 3,
+   "chase": 2,
+   "wiggle": 13,
+   "sniff": 1
+  }
+ },
+ {
+  "seed": 8,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 1.1,
+  "edge_stops": 2,
+  "acts": {
+   "bounce": 29,
+   "paw_pat": 9,
+   "explore": 3,
+   "chase": 2,
+   "wiggle": 10,
+   "sniff": 2
+  }
+ },
+ {
+  "seed": 9,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 5.5,
+  "edge_stops": 2,
+  "acts": {
+   "bounce": 27,
+   "paw_pat": 5,
+   "explore": 2,
+   "chase": 2,
+   "wiggle": 17,
+   "sniff": 2
+  }
+ },
+ {
+  "seed": 10,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 20.7,
+  "edge_stops": 2,
+  "acts": {
+   "bounce": 32,
+   "paw_pat": 2,
+   "zoomies": 1,
+   "chase": 5,
+   "wiggle": 14,
+   "sniff": 1
+  }
+ },
+ {
+  "seed": 11,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 2.5,
+  "edge_stops": 0,
+  "acts": {
+   "bounce": 26,
+   "paw_pat": 6,
+   "explore": 1,
+   "chase": 4,
+   "wiggle": 21
+  }
+ },
+ {
+  "seed": 12,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 3.8,
+  "edge_stops": 0,
+  "acts": {
+   "bounce": 28,
+   "paw_pat": 6,
+   "zoomies": 1,
+   "chase": 4,
+   "wiggle": 17
+  }
+ },
+ {
+  "seed": 13,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 16.1,
+  "edge_stops": 0,
+  "acts": {
+   "bounce": 28,
+   "paw_pat": 9,
+   "explore": 2,
+   "chase": 4,
+   "wiggle": 12,
+   "sniff": 1
+  }
+ },
+ {
+  "seed": 14,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 12.1,
+  "edge_stops": 1,
+  "acts": {
+   "bounce": 30,
+   "paw_pat": 6,
+   "zoomies": 1,
+   "chase": 2,
+   "wiggle": 17
+  }
+ },
+ {
+  "seed": 15,
+  "fell": false,
+  "tipped": false,
+  "tilt_max": 7.2,
+  "edge_stops": 1,
+  "acts": {
+   "bounce": 25,
+   "paw_pat": 11,
+   "zoomies": 1,
+   "chase": 3,
+   "wiggle": 13,
+   "sniff": 1
+  }
+ }
+]

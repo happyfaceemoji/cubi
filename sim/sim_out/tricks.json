@@ -1,0 +1,106 @@
+[
+ {
+  "trick": "wiggle",
+  "tilt_max": 2.7,
+  "leg_max_deg": 6.0,
+  "moves_mm": 6.3,
+  "turns_deg": 3.0,
+  "falls": 0
+ },
+ {
+  "trick": "paw_pat",
+  "tilt_max": 3.0,
+  "leg_max_deg": 9.5,
+  "moves_mm": 3.4,
+  "turns_deg": 2.3,
+  "falls": 0
+ },
+ {
+  "trick": "bounce",
+  "tilt_max": 3.2,
+  "leg_max_deg": 6.0,
+  "moves_mm": 1.4,
+  "turns_deg": 0.6,
+  "falls": 0
+ },
+ {
+  "trick": "chase",
+  "tilt_max": 3.4,
+  "leg_max_deg": 12.0,
+  "moves_mm": 32.8,
+  "turns_deg": 0.7,
+  "falls": 0
+ },
+ {
+  "trick": "zoomies",
+  "tilt_max": 8.6,
+  "leg_max_deg": 12.0,
+  "moves_mm": 59.9,
+  "turns_deg": 36.2,
+  "falls": 0
+ },
+ {
+  "trick": "sniff",
+  "tilt_max": 3.7,
+  "leg_max_deg": 12.0,
+  "moves_mm": 4.5,
+  "turns_deg": 1.3,
+  "falls": 0
+ },
+ {
+  "trick": "startle",
+  "tilt_max": 3.1,
+  "leg_max_deg": 12.0,
+  "moves_mm": 11.3,
+  "turns_deg": 1.3,
+  "falls": 0
+ },
+ {
+  "trick": "stretch",
+  "tilt_max": 21.8,
+  "leg_max_deg": 72.0,
+  "moves_mm": 6.5,
+  "turns_deg": 4.5,
+  "falls": 0
+ },
+ {
+  "trick": "settle",
+  "tilt_max": 2.7,
+  "leg_max_deg": 2.5,
+  "moves_mm": 0.1,
+  "turns_deg": 0.1,
+  "falls": 0
+ },
+ {
+  "trick": "flop",
+  "tilt_max": 6.1,
+  "leg_max_deg": 75.0,
+  "moves_mm": 3.6,
+  "turns_deg": 1.3,
+  "falls": 0
+ },
+ {
+  "trick": "getup",
+  "tilt_max": 10.3,
+  "leg_max_deg": 75.0,
+  "moves_mm": 23.9,
+  "turns_deg": 7.5,
+  "falls": 0
+ },
+ {
+  "trick": "tuck",
+  "tilt_max": 10.3,
+  "leg_max_deg": 75.0,
+  "moves_mm": 22.1,
+  "turns_deg": 1.1,
+  "falls": 0
+ },
+ {
+  "trick": "untuck",
+  "tilt_max": 10.3,
+  "leg_max_deg": 75.0,
+  "moves_mm": 22.1,
+  "turns_deg": 1.1,
+  "falls": 0
+ }
+]

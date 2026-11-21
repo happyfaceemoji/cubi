@@ -1,0 +1,69 @@
+-- static fit (assembled) --
+PASS  hood vs chassis                                            overlap    0.000 mm3
+PASS  hood vs battery door                                       overlap    0.000 mm3
+PASS  chassis vs battery door                                    overlap   -0.000 mm3
+PASS  chassis vs servos                                          overlap   -0.000 mm3
+PASS  hood vs servos                                             overlap    0.000 mm3
+PASS  chassis vs xiao_stack                                      overlap    0.000 mm3
+PASS  hood vs xiao_stack                                         overlap    0.000 mm3
+PASS  chassis vs battery                                         overlap    0.000 mm3
+PASS  hood vs battery                                            overlap    0.000 mm3
+PASS  chassis vs speaker                                         overlap    0.000 mm3
+PASS  hood vs speaker                                            overlap    0.000 mm3
+PASS  chassis vs switch                                          overlap   -0.000 mm3
+PASS  hood vs switch                                             overlap    0.000 mm3
+PASS  chassis vs amp                                             overlap    0.000 mm3
+PASS  hood vs amp                                                overlap    0.000 mm3
+PASS  servos vs xiao_stack                                       overlap    0.000 mm3
+PASS  servos vs battery                                          overlap    0.000 mm3
+PASS  keeper vs chassis                                          overlap    0.000 mm3
+PASS  keeper vs hood                                             overlap    0.000 mm3
+PASS  keeper vs xiao_stack                                       overlap    0.000 mm3
+PASS  pod 30 vs chassis                                          overlap    0.000 mm3
+PASS  pod 30 vs hood                                             overlap    0.000 mm3
+PASS  pod 30 vs xiao_stack                                       overlap    0.000 mm3
+PASS  pod 30 vs servos                                           overlap    0.000 mm3
+PASS  pod 30 vs speaker                                          overlap    0.000 mm3
+PASS  pod 30 vs its sensor board                                 overlap    0.000 mm3
+PASS  sensor board 30 vs chassis                                 overlap    0.000 mm3
+PASS  ToF beam 30 deg (25 deg FoV) vs hood                       overlap    0.000 mm3
+PASS  ToF beam 30 deg vs chassis                                 overlap    0.000 mm3
+PASS  pod 35 vs chassis                                          overlap    0.000 mm3
+PASS  pod 35 vs hood                                             overlap    0.000 mm3
+PASS  pod 35 vs xiao_stack                                       overlap    0.000 mm3
+PASS  pod 35 vs servos                                           overlap    0.000 mm3
+PASS  pod 35 vs speaker                                          overlap    0.000 mm3
+PASS  pod 35 vs its sensor board                                 overlap    0.000 mm3
+PASS  sensor board 35 vs chassis                                 overlap    0.000 mm3
+PASS  ToF beam 35 deg (25 deg FoV) vs hood                       overlap    0.000 mm3
+PASS  ToF beam 35 deg vs chassis                                 overlap    0.000 mm3
+PASS  pod 40 vs chassis                                          overlap    0.000 mm3
+PASS  pod 40 vs hood                                             overlap    0.000 mm3
+PASS  pod 40 vs xiao_stack                                       overlap    0.000 mm3
+PASS  pod 40 vs servos                                           overlap    0.000 mm3
+PASS  pod 40 vs speaker                                          overlap    0.000 mm3
+PASS  pod 40 vs its sensor board                                 overlap   -0.000 mm3
+PASS  sensor board 40 vs chassis                                 overlap    0.000 mm3
+PASS  ToF beam 40 deg (25 deg FoV) vs hood                       overlap    0.018 mm3
+PASS  ToF beam 40 deg vs chassis                                 overlap    0.000 mm3
+-- camera view --
+PASS  camera view cone 20 deg half-angle vs hood                 overlap    0.000 mm3
+PASS  camera view cone 20 deg half-angle vs chassis              overlap    0.000 mm3
+PASS  camera view cone 26 deg half-angle vs hood                 overlap    0.000 mm3
+PASS  camera view cone 26 deg half-angle vs chassis              overlap    0.000 mm3
+-- service paths --
+PASS  hood lifts straight up 60 mm (vs chassis+servos+switch)    worst    0.000 mm3
+PASS  servo LR pulls out sideways 25 mm (hood off)               worst    0.000 mm3
+PASS  servo LF pulls out sideways 25 mm (hood off)               worst    0.000 mm3
+PASS  servo RR pulls out sideways 25 mm (hood off)               worst    0.000 mm3
+PASS  servo RF pulls out sideways 25 mm (hood off)               worst    0.000 mm3
+PASS  camera + XIAO lift out 25 mm (keeper off)                  worst    0.000 mm3
+PASS  battery drops out 10 mm (door off)                         worst    0.000 mm3
+PASS  pod 30 slides back 1.5 mm                                  worst    0.000 mm3
+PASS  pod 30 then lifts out 25 mm                                worst    0.000 mm3
+PASS  pod 35 slides back 1.5 mm                                  worst    0.000 mm3
+PASS  pod 35 then lifts out 25 mm                                worst    0.000 mm3
+PASS  pod 40 slides back 1.5 mm                                  worst    0.000 mm3
+PASS  pod 40 then lifts out 25 mm                                worst    0.000 mm3
+
+64/64 checks pass

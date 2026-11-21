@@ -1,0 +1,487 @@
+<title>Cubi Print Parts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+/* Layout: one-screen viewer — the real STL geometry on the left (assembled or on A1 mini beds), part list on the right; stacks on phones. Single dark look by choice. */
+:root {
+  --bg: #15131A;
+  --stage: #1B1822;
+  --panel: #1F1C27;
+  --line: #322D3D;
+  --fg: #ECE8F2;
+  --muted: #A9A2B8;
+  --accent: #C79BF2;
+  --on-accent: #1A1220;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 14px; }
+.app {
+  height: 100%; box-sizing: border-box;
+  display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px;
+  padding-block: 16px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.stage { position: relative; min-width: 0; min-height: 0; background: var(--stage); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.hint { position: absolute; left: 14px; bottom: 12px; font: 12px/1 var(--mono); color: var(--muted); pointer-events: none; }
+.tag { position: absolute; left: 14px; top: 14px; font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+.card {
+  position: absolute; right: 14px; top: 14px; max-width: min(300px, calc(100% - 28px)); box-sizing: border-box;
+  background: rgba(31, 28, 39, 0.94); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.card h2 { margin: 0; font: 600 20px/1.1 var(--display); color: var(--accent); }
+.card .meta { font: 12px/1.4 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.card p { margin: 0; font-size: 13px; line-height: 1.45; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; font: 13px var(--mono); color: var(--muted); }
+.rail { min-width: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 22px; padding: 4px 2px 8px; }
+h1 { margin: 0; font: 800 56px/0.9 var(--display); letter-spacing: -0.02em; color: var(--accent); text-wrap: balance; }
+.sub { margin: 8px 0 0; color: var(--muted); line-height: 1.5; max-width: 36ch; }
+.group { display: flex; flex-direction: column; gap: 10px; }
+.label { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.seg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.nets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.nets button { width: 100%; min-height: 44px; display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 8px; align-items: center;
+  padding: 6px 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 12px/1.25 var(--mono); text-align: left; cursor: pointer; }
+.nets button[aria-pressed="true"] { border-color: var(--accent); }
+.nets .chip { width: 12px; height: 12px; border-radius: 50%; outline: 1px solid rgba(255,255,255,0.25); }
+.pins { width: 100%; border-collapse: collapse; font: 12px/1.35 var(--mono); }
+.pins th { text-align: left; color: var(--muted); font-weight: 500; padding: 0 8px 6px 0; }
+.pins td { padding: 5px 8px 5px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.pins td:first-child { white-space: nowrap; color: var(--accent); font-variant-numeric: tabular-nums; }
+.small { margin: 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.seg button, .toggle {
+  font: 500 13px/1 var(--mono); color: var(--fg); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; min-height: 44px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.toggle { width: 100%; text-align: left; padding: 0 14px; display: flex; justify-content: space-between; align-items: center; }
+.toggle[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.swatches { display: flex; gap: 10px; }
+.sw { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line); cursor: pointer; padding: 0; }
+.sw[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--bg) inset; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.parts { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.parts button {
+  width: 100%; min-height: 44px; display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 10px; align-items: center;
+  padding: 8px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; color: var(--fg);
+  font: 13px/1.3 var(--mono); text-align: left; cursor: pointer;
+}
+.parts button[aria-pressed="true"] { border-color: var(--accent); }
+.parts .chip { width: 12px; height: 12px; border-radius: 3px; }
+.parts .q { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.plates { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font: 13px/1.4 var(--mono); }
+.plates li { display: grid; grid-template-columns: 3ch minmax(0, 1fr) auto; gap: 10px; }
+.plates .n { color: var(--accent); }
+.plates .m { color: var(--muted); }
+.checks { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.checks li { font-size: 13px; line-height: 1.45; padding-left: 14px; position: relative; }
+.checks li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+@media (max-width: 760px) {
+  html, body { height: auto; }
+  .app { height: auto; grid-template-columns: 1fr; }
+  .stage { height: 62vh; min-height: 380px; }
+  .rail { overflow: visible; }
+  h1 { font-size: 46px; }
+}
+</style>
+
+<div class="app">
+  <section class="stage" id="stage" aria-label="3D view of the Cubi print files">
+    <div class="loading" id="loading">Loading the print files…</div>
+    <span class="tag" id="tag">print files · assembled · mm</span>
+    <div class="card" id="card" hidden>
+      <h2 id="card-name"></h2>
+      <div class="meta" id="card-meta"></div>
+      <p id="card-note"></p>
+    </div>
+    <span class="hint">Drag to orbit · scroll or pinch to zoom · tap a part</span>
+  </section>
+
+  <aside class="rail">
+    <div>
+      <h1>Print parts</h1>
+      <p class="sub">Cubi with camera eyes: a 48 mm cube on four 3.7 g micro servos. Left eye sees (XIAO ESP32S3 Sense camera), right eye measures distance. Exact STL geometry, every bought part, every wire.</p>
+    </div>
+
+    <div class="group">
+      <span class="label">View</span>
+      <div class="seg" role="group" aria-label="View">
+        <button id="v-asm" data-view="asm" aria-pressed="true">Assembled</button>
+        <button id="v-parts" data-view="parts" aria-pressed="false">With parts</button>
+        <button id="v-wiring" data-view="wiring" aria-pressed="false">Wiring</button>
+        <button id="v-print" data-view="print" aria-pressed="false">Print plates</button>
+      </div>
+      <button class="toggle" id="flip" type="button" aria-pressed="false" style="margin-top:6px;width:100%">Look underneath</button>
+    </div>
+
+    <div class="group" id="wiring-panel" hidden>
+      <span class="label" id="wire-count">Wiring · tap a circuit to isolate it</span>
+      <ul class="nets" id="nets"></ul>
+      <p class="small">Tap any wire in the model to see where it goes. Pin positions follow the XIAO's standard pinout; check the silkscreen when it arrives.</p>
+      <span class="label">XIAO ESP32S3 Sense pin map</span>
+      <table class="pins">
+        <thead><tr><th>Pin</th><th>Goes to</th></tr></thead>
+        <tbody>
+          <tr><td>D0 · GPIO1</td><td>Head-tap copper pad (touch)</td></tr>
+          <tr><td>D1 · GPIO2</td><td>Front-left servo signal</td></tr>
+          <tr><td>D3 · GPIO4</td><td>Front-right servo signal</td></tr>
+          <tr><td>D8 · GPIO7</td><td>Rear-left servo signal</td></tr>
+          <tr><td>D9 · GPIO8</td><td>Rear-right servo signal</td></tr>
+          <tr><td>D4 · GPIO5</td><td>Distance sensor SDA</td></tr>
+          <tr><td>D5 · GPIO6</td><td>Distance sensor SCL</td></tr>
+          <tr><td>D6 · GPIO43</td><td>Amp BCLK (bit clock)</td></tr>
+          <tr><td>D7 · GPIO44</td><td>Amp LRC (word select)</td></tr>
+          <tr><td>D10 · GPIO9</td><td>Amp DIN (audio out)</td></tr>
+          <tr><td>D2 · GPIO3</td><td>Battery sense: middle of the 2 × 100 kΩ divider</td></tr>
+          <tr><td>BAT+ / BAT−</td><td>Switched battery (pads on the back). The XIAO charges the cell through these.</td></tr>
+          <tr><td>5V</td><td>Not connected (it's USB power)</td></tr>
+          <tr><td>3V3</td><td>Distance sensor VIN</td></tr>
+          <tr><td>GND</td><td>Ground splice, distance sensor GND</td></tr>
+          <tr><td>Note</td><td>Camera and mic are wired inside the XIAO. Leave the SD slot empty.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="toggle" id="comp" aria-pressed="true"><span>Show bought parts</span><span id="comp-state">on</span></button>
+    <button class="toggle" id="xray" aria-pressed="false"><span>See-through shell</span><span id="xray-state">off</span></button>
+
+    <div class="group">
+      <span class="label">PLA colour</span>
+      <div class="swatches" role="group" aria-label="PLA colour">
+        <button class="sw" id="c-bone" data-pla="#E6E0D4" style="background:#E6E0D4" aria-label="Bone" aria-pressed="false"></button>
+        <button class="sw" id="c-black" data-pla="#2A2930" style="background:#2A2930" aria-label="Black" aria-pressed="true"></button>
+        <button class="sw" id="c-orange" data-pla="#E2703A" style="background:#E2703A" aria-label="Orange" aria-pressed="false"></button>
+        <button class="sw" id="c-sage" data-pla="#9AB098" style="background:#9AB098" aria-label="Sage" aria-pressed="false"></button>
+      </div>
+    </div>
+
+    <div class="group">
+      <span class="label">Parts · tap to inspect</span>
+      <ul class="parts" id="parts"></ul>
+    </div>
+
+    <div class="group">
+      <span class="label">A1 mini plates · 0.4 mm nozzle · 180 × 180 mm</span>
+      <ol class="plates">
+        <li><span class="n">1</span><span>Everything: shell, bottom plate, 4 legs, 4 shoes</span><span class="m">PLA Basic</span></li>
+      </ol>
+    </div>
+
+    <div class="group">
+      <span class="label">Fit check</span>
+      <ul class="checks">
+        <li>A1 mini, 0.4 mm nozzle, all PLA Basic: one plate, about 25 g. No supports: the only overhangs are 13.5 mm USB-hole bridges, small arches, 1.4 mm eye bezels and a 2 mm speaker ledge.</li>
+        <li>Shell walls 1.6 mm (4 lines). Servo-tab pilots are 1.2 mm (the servo's own screws); bottom plate takes 4 × M2x6 self-tapping.</li>
+        <li>Fit: every part goes in, in build order. Electrical: 39 pass, 0 fail. Power: 500 mAh cell charged by the XIAO itself (~50 mA, safe), E-Switch toggle in the battery line, servos and amp straight off the cell (3.6-4.2 V, inside the servos' 3.6-4.8 V rating). About 1 h 15 min walking with the camera on. Self-test firmware compiles for the XIAO ESP32S3.</li>
+        <li>Physics sim: walks about 23 mm/s with a quick-forward, slow-back gait at ±12°; turns 8-10°/s. Still walks with servos at half torque.</li><li>Camera: snapshots over Wi-Fi to the OpenClaw agent; distance sensor stops it at desk edges.</li>
+        <li>About 85 g. 48 x 50 x 48 mm body; 64 mm wide over the legs, 69 mm tall. Keep hips within ±12° (front and rear legs touch at 17°).</li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<script src="viewer_data.js"></script>
+<script src="components.js"></script>
+<script src="wiring.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function () {
+  const D = window.CUBI;
+  const stage = document.getElementById('stage');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!D || !window.THREE) { document.getElementById('loading').textContent = 'The 3D files did not load. Refresh to try again.'; return; }
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  stage.prepend(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#17151C');
+  (function () {
+    const env = new THREE.Scene();
+    env.add(new THREE.Mesh(new THREE.BoxGeometry(40, 20, 40), new THREE.MeshBasicMaterial({ color: '#2A2730', side: THREE.BackSide })));
+    const panel = (w, h, x, y, z, c) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+    panel(14, 6, 0, 9, 4, '#FFFFFF'); panel(8, 10, 16, 2, 8, '#FFF1E2'); panel(8, 10, -16, 3, -6, '#E3D6FA');
+    scene.environment = new THREE.PMREMGenerator(renderer).fromScene(env, 0.04).texture;
+  })();
+
+  const camera = new THREE.PerspectiveCamera(32, 1, 1, 5000);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.maxPolarAngle = Math.PI;   // orbit all the way round, underneath too
+  controls.autoRotate = !reduce; controls.autoRotateSpeed = 0.6;
+  controls.addEventListener('start', () => { controls.autoRotate = false; });
+
+  scene.add(new THREE.HemisphereLight('#EEE6F8', '#2A2433', 0.35));
+  const key = new THREE.DirectionalLight('#FFF4E8', 1.5);
+  key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0005;
+  scene.add(key, key.target);
+  const rim = new THREE.DirectionalLight('#C79BF2', 0.45); rim.position.set(-300, 200, -260); scene.add(rim);
+  const under = new THREE.DirectionalLight('#FFF4E8', 0.7); under.position.set(120, -300, 160); scene.add(under);   // lights the belly when you look up from below
+
+  // 0.2 mm layer lines as a bump texture (8 layers per texture repeat)
+  const lc = document.createElement('canvas'); lc.width = 4; lc.height = 64;
+  (function () { const c = lc.getContext('2d'); for (let y = 0; y < 64; y++) { const v = 128 + Math.round(Math.sin(y / 8 * Math.PI * 2) * 100); c.fillStyle = `rgb(${v},${v},${v})`; c.fillRect(0, y, 4, 1); } })();
+  const layerTex = new THREE.CanvasTexture(lc); layerTex.wrapS = layerTex.wrapT = THREE.RepeatWrapping;
+
+  const MATS = {
+    pla: new THREE.MeshStandardMaterial({ color: '#2A2930', roughness: 0.6, bumpMap: layerTex, bumpScale: 0.25 }),
+    petg: new THREE.MeshStandardMaterial({ color: '#3A3842', roughness: 0.3, bumpMap: layerTex, bumpScale: 0.2 }),
+    tpu: new THREE.MeshStandardMaterial({ color: '#26242B', roughness: 0.95 }),
+    comp: new THREE.MeshStandardMaterial({ color: '#C79BF2', roughness: 0.5, transparent: true, opacity: 0.22, depthWrite: false })
+  };
+  const matFor = { shell: 'pla', bottom_plate: 'pla', leg: 'pla', shoe: 'pla', components: 'comp' };
+  const chipColor = { pla: () => MATS.pla.color.getStyle(), petg: () => '#3A3842', tpu: () => '#26242B' };
+  // which local axis is "up" while printing (for layer lines)
+  const printUp = { shell: [0, -1, 0], bottom_plate: [0, 1, 0], leg: [1, 0, 0], shoe: [0, -1, 0] };
+
+  function b64(s, T) { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new T(u.buffer); }
+  const geos = {};
+  function geo(name) {
+    if (geos[name]) return geos[name];
+    const src = D.meshes[name];
+    let g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(b64(src.v, Float32Array), 3));
+    g.setIndex(new THREE.BufferAttribute(b64(src.i, Uint32Array), 1));
+    g = g.toNonIndexed(); g.computeVertexNormals();
+    const base = name.replace('print_', ''), up = name.startsWith('print_') ? [0, 0, 1] : printUp[base];
+    if (up) {
+      const p = g.attributes.position.array, uv = new Float32Array(p.length / 3 * 2);
+      for (let i = 0, j = 0; i < p.length; i += 3, j += 2) { uv[j] = 0; uv[j + 1] = (p[i] * up[0] + p[i + 1] * up[1] + p[i + 2] * up[2]) / 1.6; }
+      g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    }
+    return (geos[name] = g);
+  }
+  function mesh(name, part) {
+    const m = new THREE.Mesh(geo(name), MATS[matFor[part]]);
+    m.castShadow = part !== 'components'; m.receiveShadow = true; m.userData.part = part;
+    return m;
+  }
+
+  // ---------- assembled view ----------
+  const asm = new THREE.Group(); scene.add(asm);
+  const pickables = [];
+  D.assembly.forEach(a => {
+    const m = mesh(a.mesh, a.mesh);
+    m.matrixAutoUpdate = false; m.matrix.fromArray(a.m);
+    asm.add(m); pickables.push(m);
+  });
+  const comps = mesh('components', 'components'); asm.add(comps);
+  const built = window.buildCubiComponents ? window.buildCubiComponents(THREE, D) : null;
+  const realParts = built ? built.group : new THREE.Group();
+  const compInfo = built ? built.info : {};
+  realParts.visible = false; asm.add(realParts);
+  realParts.traverse(o => { if (o.isMesh && o.userData.part) pickables.push(o); });
+  const wiring = window.buildCubiWiring ? window.buildCubiWiring(THREE, D) : null;
+  const wires = wiring ? wiring.group : new THREE.Group();
+  const wireInfo = wiring ? wiring.info : {};
+  wires.visible = false; asm.add(wires);
+  wires.traverse(o => { if (o.isMesh && o.userData.part) pickables.push(o); });
+  const box = new THREE.Box3().setFromObject(asm);
+  asm.position.y = -box.min.y;
+  const desk = new THREE.Mesh(new THREE.CircleGeometry(260, 64), new THREE.MeshStandardMaterial({ color: '#23402F', roughness: 0.92 }));
+  desk.rotation.x = -Math.PI / 2; desk.receiveShadow = true; asm.parent.add(desk);
+  const grid = new THREE.GridHelper(500, 50, '#5E7A52', '#3A5A44'); grid.position.y = 0.05; scene.add(grid);
+
+  // ---------- print plates view ----------
+  const beds = new THREE.Group(); scene.add(beds);
+  const PLATES = [
+    { label: 'ONE PLATE · ALL PARTS · PLA BASIC', items: [['shell', -32, 22], ['bottom_plate', 30, 22],
+      ['leg', -45, -32], ['leg', -30, -32], ['leg', -15, -32], ['leg', 0, -32],
+      ['shoe', 22, -24], ['shoe', 36, -24], ['shoe', 22, -40], ['shoe', 36, -40]] }
+  ];
+
+  function bedTex(label) {
+    const c = document.createElement('canvas'); c.width = c.height = 512; const x = c.getContext('2d');
+    x.fillStyle = '#2C2B31'; x.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 2600; i++) { const v = 40 + Math.random() * 30; x.fillStyle = `rgba(${v + 20},${v + 16},${v},0.5)`; x.fillRect(Math.random() * 512, Math.random() * 512, 2, 2); }
+    x.strokeStyle = 'rgba(199,155,242,0.35)'; x.lineWidth = 2; x.strokeRect(6, 6, 500, 500);
+    x.fillStyle = 'rgba(236,232,242,0.8)'; x.font = '600 22px monospace'; x.fillText(label, 20, 496);
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t;
+  }
+  PLATES.forEach((pl, i) => {
+    const bx = (i - (PLATES.length - 1) / 2) * 220;
+    const bed = new THREE.Mesh(new THREE.BoxGeometry(180, 4, 180), [null, null, null, null, null, null].map((_, k) => k === 2 ? new THREE.MeshStandardMaterial({ map: bedTex(pl.label), roughness: 0.8 }) : new THREE.MeshStandardMaterial({ color: '#1E1D22', roughness: 0.6 })));
+    bed.position.set(bx, -2, 0); bed.receiveShadow = true; beds.add(bed);
+    pl.items.forEach(([part, x, y]) => {
+      const m = mesh('print_' + part, part); m.rotation.x = -Math.PI / 2; m.position.set(bx + x, 0, -y);
+      beds.add(m); pickables.push(m);
+    });
+  });
+
+  // ---------- UI ----------
+  const partsEl = document.getElementById('parts');
+  const order = ['shell', 'bottom_plate', 'leg', 'shoe'];
+  const partBtns = {};
+  order.forEach(p => {
+    const inf = D.info[p], e = D.ext['print_' + p];
+    const li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('aria-pressed', 'false'); b.dataset.part = p;
+    b.innerHTML = `<span class="chip"></span><span>${inf[0]}</span><span class="q">×${inf[1]} · ${inf[2]}</span>`;
+    b.querySelector('.chip').style.background = chipColor[matFor[p]]();
+    b.addEventListener('click', () => select(selected === p ? null : p));
+    li.appendChild(b); partsEl.appendChild(li); partBtns[p] = b;
+  });
+
+  let selected = null;
+  const card = document.getElementById('card');
+  function select(p) {
+    selected = p;
+    Object.entries(partBtns).forEach(([k, b]) => b.setAttribute('aria-pressed', String(k === p)));
+    pickables.forEach(m => {
+      if (!m.userData.baseMat) m.userData.baseMat = m.material;
+      if (m.userData.part === p) {
+        if (!m.userData.hiMat) { m.userData.hiMat = m.userData.baseMat.clone(); m.userData.hiMat.emissive = new THREE.Color('#C79BF2'); m.userData.hiMat.emissiveIntensity = 0.35; }
+        m.userData.hiMat.color.copy(m.userData.baseMat.color);
+        m.material = m.userData.hiMat;
+      } else m.material = m.userData.baseMat;
+    });
+    if (!p) { card.hidden = true; return; }
+    if (p.startsWith('w:')) {
+      const wi = wireInfo[p] || ['Wire', ''];
+      document.getElementById('card-name').textContent = wi[0];
+      document.getElementById('card-meta').textContent = wi[1].length < 40 ? wi[1] : 'Wiring';
+      document.getElementById('card-note').textContent = wi[1].length < 40 ? '' : wi[1];
+      card.hidden = false; return;
+    }
+    if (p.startsWith('c:')) {
+      const ci = compInfo[p] || ['Component', ''];
+      document.getElementById('card-name').textContent = ci[0];
+      document.getElementById('card-meta').textContent = 'Bought part';
+      document.getElementById('card-note').textContent = ci[1];
+      card.hidden = false; return;
+    }
+    const inf = D.info[p], e = D.ext['print_' + p];
+    document.getElementById('card-name').textContent = inf[0];
+    document.getElementById('card-meta').textContent = `×${inf[1]} · ${inf[2]} · ${e[0]} × ${e[1]} × ${e[2]} mm as printed`;
+    document.getElementById('card-note').textContent = inf[3];
+    card.hidden = false;
+  }
+
+  const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+  let down = null;
+  renderer.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+  renderer.domElement.addEventListener('pointerup', e => {
+    if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
+    const r = renderer.domElement.getBoundingClientRect();
+    ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+    ray.setFromCamera(ptr, camera);
+    const hit = ray.intersectObjects(pickables.filter(m => m.visible && m.parent.visible), false)[0];
+    select(hit ? (selected === hit.object.userData.part ? null : hit.object.userData.part) : null);
+  });
+
+  let view = 'asm';
+  const compBtn = document.getElementById('comp');
+  const tag = document.getElementById('tag');
+  function setView(v) {
+    view = v;
+    document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+    const onRobot = v !== 'print';
+    asm.visible = desk.visible = grid.visible = onRobot; beds.visible = !onRobot;
+    realParts.visible = v === 'parts' || v === 'wiring';
+    wires.visible = v === 'wiring';
+    document.getElementById('wiring-panel').hidden = v !== 'wiring';
+    comps.visible = v === 'asm' && compBtn.getAttribute('aria-pressed') === 'true';
+    compBtn.disabled = v !== 'asm';
+    xBtn.disabled = v === 'print';
+    applyXray();
+    tag.textContent = { asm: 'print files · assembled · mm', parts: 'print files + bought parts · mm', wiring: 'wiring · every connection · mm', print: 'print files · A1 mini plates · mm' }[v];
+    if (selected && (selected.startsWith('c:') && v !== 'parts' && v !== 'wiring' || selected.startsWith('w:') && v !== 'wiring')) select(null);
+    if (onRobot) {
+      controls.target.set(0, 33, 0);
+      if (v === 'wiring') camera.position.set(80, 85, -95); else camera.position.set(140, 100, 150);
+      key.position.set(180, 320, 200); key.target.position.set(0, 0, 0);
+      Object.assign(key.shadow.camera, { left: -90, right: 90, top: 90, bottom: -90, near: 10, far: 900 });
+      controls.minDistance = 50; controls.maxDistance = 600;
+    } else {
+      controls.target.set(0, 0, 0); camera.position.set(0, 240, 220);
+      key.position.set(200, 500, 250); key.target.position.set(0, 0, 0);
+      Object.assign(key.shadow.camera, { left: -500, right: 500, top: 300, bottom: -300, near: 10, far: 1500 });
+      controls.minDistance = 80; controls.maxDistance = 900;
+    }
+    key.shadow.camera.updateProjectionMatrix();
+  }
+  document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+  compBtn.addEventListener('click', () => {
+    const on = compBtn.getAttribute('aria-pressed') !== 'true';
+    compBtn.setAttribute('aria-pressed', String(on)); document.getElementById('comp-state').textContent = on ? 'on' : 'off';
+    comps.visible = on && view === 'asm';
+  });
+  const xBtn = document.getElementById('xray');
+  const shellMat = MATS.pla.clone();
+  asm.children.forEach(m => { if (m.userData.part === 'shell') { m.material = shellMat; m.userData.baseMat = shellMat; } });
+  const xrayState = { asm: false, parts: true, wiring: true, print: false };
+  // circuit legend: tap to show one circuit only
+  const netsEl = document.getElementById('nets');
+  let isolate = null;
+  const netBtns = {};
+  (window.CUBI_NETS || []).forEach(n => {
+    if (!wiring || !wiring.byNet[n.id]) return;
+    const li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = `<span class="chip" style="background:${n.color}"></span><span>${n.name} · ${wiring.byNet[n.id].length}</span>`;
+    b.addEventListener('click', () => {
+      isolate = isolate === n.id ? null : n.id;
+      Object.entries(netBtns).forEach(([k, el]) => el.setAttribute('aria-pressed', String(k === isolate)));
+      Object.entries(wiring.byNet).forEach(([k, ms]) => ms.forEach(m => { m.visible = !isolate || k === isolate; }));
+    });
+    li.appendChild(b); netsEl.appendChild(li); netBtns[n.id] = b;
+  });
+  if (wiring) document.getElementById('wire-count').textContent = `Wiring · ${wiring.count} wires · tap a circuit to isolate it`;
+  function applyXray() {
+    const on = !!xrayState[view];
+    xBtn.setAttribute('aria-pressed', String(on)); document.getElementById('xray-state').textContent = on ? 'on' : 'off';
+    shellMat.transparent = on; shellMat.opacity = on ? 0.18 : 1; shellMat.depthWrite = !on; shellMat.needsUpdate = true;
+  }
+  xBtn.addEventListener('click', () => { xrayState[view] = !xrayState[view]; applyXray(); });
+  document.querySelectorAll('[data-pla]').forEach(b => b.addEventListener('click', () => {
+    MATS.pla.color.set(b.dataset.pla); shellMat.color.set(b.dataset.pla);
+    document.querySelectorAll('[data-pla]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+    ['shell', 'bottom_plate'].forEach(p => partBtns[p].querySelector('.chip').style.background = b.dataset.pla);
+    if (selected) select(selected);
+  }));
+
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / Math.max(h, 1); camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+  setView('asm');
+  document.getElementById('loading').hidden = true;
+
+  const flipBtn = document.getElementById('flip');
+  let flipAnim = null;
+  flipBtn.addEventListener('click', () => {
+    if (view === 'print') setView('asm');
+    const below = camera.position.y > controls.target.y;          // toggle: above <-> below
+    const from = camera.position.clone(), r = Math.max(130, from.distanceTo(controls.target));
+    const to = below ? new THREE.Vector3(r * 0.35, -r * 0.85, r * 0.4).add(controls.target) : new THREE.Vector3(140, 100, 150);
+    controls.autoRotate = false; flipAnim = { from, to, t0: performance.now() };
+  });
+  (function loop() {
+    if (flipAnim) {
+      const k = Math.min(1, (performance.now() - flipAnim.t0) / (reduce ? 1 : 900)), e = k * k * (3 - 2 * k);
+      camera.position.lerpVectors(flipAnim.from, flipAnim.to, e); if (k >= 1) flipAnim = null;
+    }
+    controls.update();
+    const below = camera.position.y < 0;                           // under the desk: hide it so the belly shows
+    if (view !== 'print') { desk.visible = grid.visible = !below; }
+    flipBtn.setAttribute('aria-pressed', String(below)); flipBtn.textContent = below ? 'Back on top' : 'Look underneath';
+    renderer.render(scene, camera); requestAnimationFrame(loop);
+  })();
+})();
+</script>

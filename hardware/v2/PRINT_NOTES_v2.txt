@@ -1,0 +1,70 @@
+CUBI v2 SERVICEABLE BODY - PRINT & BUILD NOTES (19 Nov 2026)
+
+WHAT CHANGED
+v7 was one shell with every part glued to its walls. Closing it pressed on the wiring and unseated the
+Sense board. v2 splits the body in two:
+  HOOD    = the v7 shell skin (same eyes, bezels, grille and corner screw bosses). Nothing is mounted to it.
+  CHASSIS = base plate + three bulkheads + four servo frames. Every part and wire lives here.
+Remove the 4 M2 screws underneath and the hood lifts straight up. No wires go to the hood.
+
+FIRST, PRINT THE COUPONS (cubi_v2_coupons_plate.stl, about 15 min)
+  coupon_eyes       front bulkhead strip. Drop the camera module into its slot from the top, push the
+                    keeper on, and screw the 30 deg pod on with an M2x4 countersunk screw from the front.
+  coupon_eyes_hood  the hood's front wall. Hold it against coupon_eyes and look through the eyes: the lens
+                    and sensor should sit centred behind the ovals.
+  coupon_hip_v3     one servo corner. The servo goes in from OUTSIDE until its tabs sit on the pads, then
+                    its own screws go in from outside.
+  Rule unchanged: modelled clearance under 1 mm is a fail.
+
+PRINT (A1 mini, PLA Basic, 0.2 Standard or 0.16 Fine, no supports, about 40-45 g)
+  cubi_v2_A1mini_plate_PLA_Basic.stl  hood (top face down), chassis (base down), battery door,
+                                      3 sensor pods (30/35/40 deg, front face down), camera keeper
+  Hood and chassis: 4 walls, 15% gyroid. Pods and keeper: 4 walls, 40% infill.
+  Legs and shoes don't change: use the v2 plate parts you already have.
+
+HARDWARE ADDED
+  3x M2x4 countersunk screws: 2 for the battery door, 1 for the sensor pod
+  1 mm foam tape: one pad on the back of the XIAO (the mid bulkhead presses it forward and keeps the B2B
+  connector seated)
+  The existing 4x M2x6 screws hold the hood on.
+
+ASSEMBLY (hood off the whole time)
+ 1. Servos: slide each one in from the OUTSIDE of its frame, shaft outward, until the tabs sit on the pads.
+    Drive the servo's own screws through the tabs into the pads (pre-drill 1 mm). To replace one later:
+    take the leg off, take out 2 screws, and pull it straight out. Nothing else moves.
+ 2. Switch: push the bushing through the rear bulkhead from inside. Its body sits in the 0.6 mm pocket.
+    Glue it. The tongue below it fills the hood's slot.
+ 3. Battery: put it in from UNDERNEATH, leads first through the rear notch. Close the door with 2 screws.
+    To replace the battery: open the door and unplug the PH2.0. The rest stays put.
+ 4. Distance sensor: glue the GY-530 into a pod, chip facing out through the window and SCL/SDA pads toward
+    the middle of the robot (wires exit the notch). Screw the pod on from the front of the front bulkhead.
+    Start with the 30 deg pod. If `d` on clear desk still reads 150+ mm, swap to 35 or 40. That swap is one
+    screw.
+ 5. Camera + XIAO: stick the foam pad on the back of the XIAO. Lower the camera module into the slot behind
+    its eye with the lens in the slot. The board stack drops down between the front and mid bulkheads.
+    Push the keeper clip over the top of the slot. To service: pull the keeper and lift the camera and XIAO
+    out as one unit.
+ 6. Speaker: foam-tape it to the rib on the speaker side, sitting on the ledge, sound side out.
+    Amp: foam-tape it to the back of the mid bulkhead. Caps: zip-tie them to the slots in the rear bulkhead.
+ 7. Touch: copper tape on top of the paddle between the rear and mid bulkheads. It works through the 0.3 mm
+    gap and the 1.6 mm ceiling. Re-check the touch threshold with `h`.
+ 8. Antenna: if you fit the U.FL antenna, stick it in the 0.4 mm recess on the back of the rear bulkhead.
+ 9. Run the self-test with the switch ON, then lower the hood and fit the 4 M2x6 screws from underneath.
+
+WHAT MOVED (check these)
+  - The camera module and XIAO sit 1.9 mm further back than in v7. The lens can no longer poke into the
+    wall, because the hood has to slide past it. The hood's USB-C opening moved back to match (z 8.2) and
+    is 0.4 mm wider. MEASURE how far the lens sticks out past the module face. If it's more than 1.6 mm,
+    raise LENS_PROUD and regenerate.
+  - The servo top faces sit 0.3 mm further in, so the legs sit 0.3 mm closer to the body.
+  - The switch lever sticks out about 1.9 mm less (it now goes through bulkhead + gap + hood).
+  - The 45 deg pod was dropped: its beam clips the eye oval. 40 deg clips by 0.02 mm3, which is negligible.
+  - Weight: about +9 g of plastic (solid-equivalent 43 g vs 34 g for v7 shell + plate). That's the cost of the
+    double walls. Weigh her: grip was already marginal at about 100 g.
+
+FIT CHECK  python fitcheck_v2.py cubi_shell_v7.stl  -> 64/64 pass
+  Static clearances; the hood lifting straight up 60 mm past servos, switch and chassis; each servo pulling
+  out; camera + XIAO lifting out; battery dropping out; each pod sliding back and lifting out; ToF beam
+  (25 deg FoV) vs hood and chassis; camera view cone (26 deg half-angle) vs hood and chassis.
+
+SOURCE  python cubi_v2_parts.py cubi_shell_v7.stl  (needs ponder_parts.py beside it; manifold3d, trimesh)

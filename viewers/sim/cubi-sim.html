@@ -1,0 +1,289 @@
+<title>Cubi Sim</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a lab bench. Big 3D stage on the left, a control rail on the right; stacks on phones. */
+:root {
+  --bg: #eef0ec; --panel: #ffffff; --ink: #1d2320; --muted: #5d6862; --line: #d5dad4;
+  --accent: #e0632b; --accent-ink: #ffffff; --good: #2f8f5b; --bad: #c8412f; --stage: #dfe3dc;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141816; --panel: #1c211e; --ink: #e7ebe6; --muted: #98a39c; --line: #2d3430;
+  --accent: #f07a45; --accent-ink: #1a0f08; --good: #5cc28a; --bad: #ef6b58; --stage: #0f1311; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #141816; --panel: #1c211e; --ink: #e7ebe6; --muted: #98a39c; --line: #2d3430;
+  --accent: #f07a45; --accent-ink: #1a0f08; --good: #5cc28a; --bad: #ef6b58; --stage: #0f1311; color-scheme: dark }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; }
+.wrap { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; height: 100%; box-sizing: border-box;
+  padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.stage { position: relative; background: var(--stage); border-radius: 14px; overflow: hidden; min-height: 320px; }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.hud { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; gap: 8px; flex-wrap: wrap; pointer-events: none; }
+.chip { font-family: var(--mono); font-size: 12px; background: color-mix(in srgb, var(--panel) 88%, transparent); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums; }
+.chip.act { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+.chip.edge { background: var(--bad); color: #fff; border-color: transparent; }
+.hint { position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: var(--muted); pointer-events: none; }
+aside { display: flex; flex-direction: column; gap: 14px; min-width: 0; overflow: auto; }
+h1 { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; margin: 0; letter-spacing: -0.01em; }
+h1 small { display: block; font-family: var(--body); font-weight: 400; font-size: 13px; color: var(--muted); margin-top: 6px; letter-spacing: 0; }
+.label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.runs { display: flex; flex-direction: column; gap: 4px; }
+.runs button { text-align: left; font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  padding: 9px 12px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+.runs button span:last-child { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.runs button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.runs button:focus-visible, .ctl button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.note { font-size: 14px; line-height: 1.45; color: var(--muted); margin: 0; }
+.ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ctl button { font: 600 13px var(--body); border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); padding: 7px 12px; cursor: pointer; }
+.ctl button.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; min-width: 74px; }
+.ctl button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.scrub { display: flex; flex-direction: column; gap: 6px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.tl { position: relative; height: 10px; border-radius: 3px; overflow: hidden; background: var(--line); }
+.tl i { position: absolute; top: 0; bottom: 0; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+.stat b { display: block; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11px; color: var(--muted); }
+.legend { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.legend i { display: inline-block; width: 10px; height: 3px; vertical-align: middle; margin-right: 6px; }
+@media (max-width: 820px) {
+  .wrap { grid-template-columns: 1fr; height: auto; }
+  .stage { height: 62vh; }
+  aside { overflow: visible; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="hud">
+      <span class="chip act" id="act">walk</span>
+      <span class="chip" id="t">0.0 s</span>
+      <span class="chip" id="tof">ToF — mm</span>
+    </div>
+    <div class="hint">Drag to orbit · scroll or pinch to zoom</div>
+  </div>
+  <aside>
+    <h1>Cubi Sim<small>Recorded pybullet runs: real leg meshes, mass layout, GH-S37D servo limits, ray-cast distance sensor.</small></h1>
+    <div class="runs" id="runs" role="group" aria-label="Scenario"></div>
+    <p class="note" id="note"></p>
+    <div class="scrub">
+      <div class="ctl">
+        <button class="primary" id="play">Pause</button>
+        <button id="sp25" data-s="0.25">¼×</button>
+        <button id="sp50" data-s="0.5">½×</button>
+        <button id="sp100" data-s="1" aria-pressed="true">1×</button>
+        <button id="sp200" data-s="2">2×</button>
+        <button id="follow" aria-pressed="true">Follow</button>
+      </div>
+      <input type="range" id="pos" min="0" max="1000" value="0" aria-label="Time">
+      <div class="tl" id="tl" aria-hidden="true"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="dist">0 mm</b><span>moved from start</span></div>
+      <div class="stat"><b id="spd">0 mm/s</b><span>average speed</span></div>
+      <div class="stat"><b id="tilt">0.0°</b><span>body tilt</span></div>
+      <div class="stat"><b id="edge">—</b><span>front to desk edge</span></div>
+    </div>
+    <div class="legend">
+      <div><i style="background:var(--good)"></i>Distance sensor beam, hitting the desk</div>
+      <div><i style="background:var(--bad)"></i>Beam with no return (past an edge)</div>
+      <div><i style="background:var(--accent)"></i>Path of her body</div>
+    </div>
+  </aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="sim_data.js"></script>
+<script>
+(function () {
+  const D = window.CUBI_SIM;
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const stage = document.getElementById('stage');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.shadowMap.enabled = true;
+  stage.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 1, 6000);
+  camera.position.set(190, 150, -250);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.target.set(0, 20, 0);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7d6a, 0.75));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+  sun.position.set(140, 260, 120); sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  Object.assign(sun.shadow.camera, { left: -250, right: 250, top: 250, bottom: -250, near: 10, far: 900 });
+  scene.add(sun);
+
+  // sim frame: metres, Z up, Y forward -> this group: mm, rotated so sim Z is up on screen
+  const sim = new THREE.Group(); sim.rotation.x = -Math.PI / 2; sim.scale.setScalar(1000); scene.add(sim);
+  const world = new THREE.Group(); sim.add(world);
+
+  // robot
+  const shellMat = new THREE.MeshStandardMaterial({ color: 0xf1ede4, roughness: 0.55 });
+  const robot = new THREE.Group(); sim.add(robot);
+  const B = D.body;
+  // shell + the 4.9 mm bottom plate she lies down on
+  const bh = B.belly_h || 0;
+  const box = new THREE.Mesh(new THREE.BoxGeometry(B.half[0] * 2, B.half[1] * 2, B.half[2] * 2 - bh), shellMat);
+  box.position.set(B.offset[0], B.offset[1], B.offset[2] + bh / 2); box.castShadow = true; robot.add(box);
+  (B.belly_xz || []).forEach(([fx, fz]) => {
+    const R = (B.belly_r * B.belly_r + bh * bh) / (2 * bh);      // domed foot: a sphere cap, belly_r wide, bh tall
+    const foot = new THREE.Mesh(new THREE.SphereGeometry(R, 32, 12, 0, Math.PI * 2, 0, Math.acos((R - bh) / R)), shellMat);
+    foot.rotation.x = -Math.PI / 2; foot.position.set(B.offset[0] + fx, B.offset[1] + fz, B.offset[2] - B.half[2] + bh + (R - bh));
+    robot.add(foot);
+  });
+  const eyeRing = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+  const eyeDark = new THREE.MeshStandardMaterial({ color: 0x0c0d10, roughness: 0.15, metalness: 0.2 });
+  [-1, 1].forEach((sx) => {
+    const ring = new THREE.Mesh(new THREE.CylinderGeometry(B.eye_od / 2, B.eye_od / 2, 0.0014, 40), eyeRing);
+    ring.position.set(B.offset[0] + sx * B.eye_x, B.offset[1] + B.front + 0.0007, B.offset[2] + B.eye_y + (B.eye_dy || 0) + 0.0012);
+    if (B.eye_ring) ring.scale.set(B.eye_ring[0] / B.eye_od, 1, B.eye_ring[1] / B.eye_od);          // tall oval eyes
+    robot.add(ring);
+    const pupil = new THREE.Mesh(new THREE.CylinderGeometry(B.eye_hole / 2, B.eye_hole / 2, 0.0016, 40), eyeDark);
+    pupil.position.copy(ring.position); pupil.position.y += 0.0008; robot.add(pupil);
+    if (B.eye_open) pupil.scale.set(B.eye_open[0] / B.eye_hole, 1, B.eye_open[1] / B.eye_hole);
+    const glint = new THREE.Mesh(new THREE.SphereGeometry(0.0012, 12, 8), eyeRing);
+    glint.position.copy(pupil.position); glint.position.y += 0.0009; glint.position.x -= 0.0016; glint.position.z += 0.0026; robot.add(glint);
+  });
+  const legGeo = {};
+  ['L', 'R'].forEach((s) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(D.legs[s].v, 3));
+    g.setIndex(D.legs[s].f); g.computeVertexNormals(); legGeo[s] = g;
+  });
+  const legs = D.leg_side.map((s) => { const m = new THREE.Mesh(legGeo[s], shellMat); m.castShadow = true; sim.add(m); return m; });
+
+  // beam + trail
+  const beamGeo = new THREE.BufferGeometry(); beamGeo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(6), 3));
+  const beamMat = new THREE.LineBasicMaterial({ color: 0x2f8f5b });
+  const beam = new THREE.Line(beamGeo, beamMat); sim.add(beam);
+  const hitDot = new THREE.Mesh(new THREE.SphereGeometry(0.0015, 12, 8), new THREE.MeshBasicMaterial({ color: 0x2f8f5b })); sim.add(hitDot);
+  let trail = null;
+
+  function buildWorld(run) {
+    while (world.children.length) world.remove(world.children[0]);
+    const W = run.world, far = W.edge_y != null ? W.edge_y : 1.0;
+    const wood = new THREE.MeshStandardMaterial({ color: 0xb98a5e, roughness: 0.8 });
+    const desk = W.desk ? new THREE.Mesh(new THREE.BoxGeometry(W.desk[0], W.desk[1], 0.04), wood)       // finite desk (mind mode)
+                        : new THREE.Mesh(new THREE.BoxGeometry(1.2, far + 1.0, 0.04), wood);
+    if (W.desk) desk.position.set(W.desk[2], W.desk[3], -0.02); else desk.position.set(0, (far - 1.0) / 2, -0.02);
+    desk.receiveShadow = true; world.add(desk);
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshStandardMaterial({ color: 0x8b9188, roughness: 1 }));
+    floor.position.z = -0.75; floor.receiveShadow = true; world.add(floor);
+    if (W.wall_y != null) {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.02, 0.2), new THREE.MeshStandardMaterial({ color: 0x55647a, roughness: 0.7 }));
+      wall.position.set(0, W.wall_y + 0.01, 0.1); wall.castShadow = true; wall.receiveShadow = true; world.add(wall);
+    }
+    // 1 cm grid on the desk to read distance by eye
+    const grid = new THREE.GridHelper(0.6, 60, 0x7a5a3d, 0x9c7650);
+    grid.rotation.x = Math.PI / 2; grid.position.set(0, Math.min(0, far - 0.3), 0.0002); grid.material.transparent = true; grid.material.opacity = 0.35;
+    world.add(grid);
+    if (trail) sim.remove(trail);
+    const pts = []; for (let i = 0; i < run.frames.length; i += 2) { const f = run.frames[i]; pts.push(new THREE.Vector3(f[0], f[1], 0.0006)); }
+    trail = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: new THREE.Color(css('--accent')) }));
+    sim.add(trail);
+  }
+
+  // UI
+  const runsEl = document.getElementById('runs'), noteEl = document.getElementById('note');
+  const posEl = document.getElementById('pos'), tlEl = document.getElementById('tl');
+  const palette = ['#e0632b', '#2f8f5b', '#3b6fb6', '#b0448f', '#c79a1f', '#5a8f8f', '#8a5cc8', '#c8412f', '#6b7d2e'];
+  let run = null, t = 0, playing = true, speed = 1, follow = true;
+  D.runs.forEach((r, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'run' + i;
+    b.innerHTML = `<span>${r.name}</span><span>${(r.frames.length / r.fps).toFixed(1)} s</span>`;
+    b.onclick = () => select(i); runsEl.appendChild(b);
+  });
+  function select(i) {
+    run = D.runs[i]; t = 0;
+    [...runsEl.children].forEach((b, k) => b.setAttribute('aria-pressed', k === i ? 'true' : 'false'));
+    noteEl.textContent = run.note; buildWorld(run);
+    // timeline: one colored segment per label run
+    tlEl.innerHTML = ''; const n = run.frames.length; let s = 0;
+    for (let k = 1; k <= n; k++) {
+      if (k === n || run.frames[k][43] !== run.frames[s][43]) {
+        const lab = run.labels[run.frames[s][43]] || '', el = document.createElement('i');
+        el.style.left = (100 * s / n) + '%'; el.style.width = (100 * (k - s) / n) + '%';
+        el.style.background = /EDGE/.test(lab) ? css('--bad') : palette[run.frames[s][43] % palette.length];
+        el.style.opacity = /pause|stop/.test(lab) ? 0.25 : 0.85; tlEl.appendChild(el); s = k;
+      }
+    }
+    const f0 = run.frames[0]; controls.target.set(f0[0] * 1000, 20, -f0[1] * 1000);
+    camera.position.set(controls.target.x + 190, 150, controls.target.z - 250);
+  }
+  document.getElementById('play').onclick = (e) => { playing = !playing; e.target.textContent = playing ? 'Pause' : 'Play'; };
+  ['sp25', 'sp50', 'sp100', 'sp200'].forEach((id) => {
+    const b = document.getElementById(id);
+    b.onclick = () => { speed = +b.dataset.s; ['sp25', 'sp50', 'sp100', 'sp200'].forEach((k) => document.getElementById(k).setAttribute('aria-pressed', k === id ? 'true' : 'false')); };
+  });
+  document.getElementById('follow').onclick = (e) => { follow = !follow; e.target.setAttribute('aria-pressed', follow); };
+  posEl.oninput = () => { t = posEl.value / 1000 * (run.frames.length - 1) / run.fps; };
+
+  const qa = new THREE.Quaternion(), qb = new THREE.Quaternion();
+  function apply(fi) {
+    const F = run.frames, i = Math.min(F.length - 2, Math.floor(fi)), a = F[i], b = F[i + 1], u = fi - i;
+    const L = (k) => a[k] + (b[k] - a[k]) * u;
+    robot.position.set(L(0), L(1), L(2));
+    qa.set(a[3], a[4], a[5], a[6]); qb.set(b[3], b[4], b[5], b[6]); robot.quaternion.copy(qa.slerp(qb, u));
+    for (let j = 0; j < 4; j++) {
+      const o = 7 + j * 7; legs[j].position.set(L(o), L(o + 1), L(o + 2));
+      qa.set(a[o + 3], a[o + 4], a[o + 5], a[o + 6]); qb.set(b[o + 3], b[o + 4], b[o + 5], b[o + 6]); legs[j].quaternion.copy(qa.slerp(qb, u));
+    }
+    const p = beamGeo.attributes.position.array; for (let k = 0; k < 6; k++) p[k] = L(35 + k); beamGeo.attributes.position.needsUpdate = true;
+    const hit = a[41] === 1, col = new THREE.Color(css(hit ? '--good' : '--bad'));
+    beamMat.color.copy(col); hitDot.material.color.copy(col); hitDot.visible = hit; hitDot.position.set(p[3], p[4], p[5]);
+    const lab = run.labels[a[43]] || '';
+    const act = document.getElementById('act'); act.textContent = lab; act.className = 'chip ' + (/EDGE/.test(lab) ? 'edge' : 'act');
+    document.getElementById('t').textContent = (fi / run.fps).toFixed(1) + ' s';
+    document.getElementById('tof').textContent = 'ToF ' + (a[42] >= 8000 ? 'no return' : a[42] + ' mm');
+    const dx = L(0) - F[0][0], dy = L(1) - F[0][1], dist = Math.hypot(dx, dy) * 1000;
+    document.getElementById('dist').textContent = dist.toFixed(0) + ' mm';
+    document.getElementById('spd').textContent = (fi > 5 ? dist / (fi / run.fps) : 0).toFixed(1) + ' mm/s';
+    const up = new THREE.Vector3(0, 0, 1).applyQuaternion(robot.quaternion);
+    document.getElementById('tilt').textContent = (Math.acos(Math.min(1, up.z)) * 180 / Math.PI).toFixed(1) + '°';
+    if (run.world.edge_y != null) {
+      let front = -1; for (let j = 0; j < 4; j++) front = Math.max(front, legs[j].position.y);
+      const fwd = new THREE.Vector3(0, B.front, 0).applyQuaternion(robot.quaternion);
+      front = Math.max(front + 0.0045, robot.position.y + fwd.y);
+      document.getElementById('edge').textContent = ((run.world.edge_y - front) * 1000).toFixed(0) + ' mm';
+    } else document.getElementById('edge').textContent = '—';
+    if (follow) {
+      const tx = robot.position.x * 1000, tz = -robot.position.y * 1000;
+      const dxs = tx - controls.target.x, dzs = tz - controls.target.z;
+      controls.target.x += dxs * 0.08; controls.target.z += dzs * 0.08; camera.position.x += dxs * 0.08; camera.position.z += dzs * 0.08;
+    }
+  }
+
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage);
+  function bg() { scene.background = new THREE.Color(css('--stage')); scene.fog = new THREE.Fog(scene.background, 900, 2600); }
+  bg(); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', bg);
+  new MutationObserver(bg).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (run) {
+      const dur = (run.frames.length - 1) / run.fps;
+      if (playing) { t += dt * speed; if (t > dur) t = 0; }
+      apply(Math.max(0, Math.min(run.frames.length - 1.001, t * run.fps)));
+      if (document.activeElement !== posEl) posEl.value = Math.round(1000 * t / dur);
+    }
+    controls.update(); renderer.render(scene, camera); requestAnimationFrame(frame);
+  }
+  select(0); resize(); requestAnimationFrame(frame);
+})();
+</script>
